@@ -8,7 +8,7 @@ Tabla de datos con 33.644 registros y 8 campos (3 tipo objeto y 1 tipo array)
 	+ **año**:	El año de la toma de datos es 2020 </br>
 	+ **mes**:	De enero a septiembre en formato número </br>
 2. **codVariedad**:	Código de producto vendido. Lo partimos en  codFam y codProd </br>
-	+ **codFam**:	"Clasifica los productos según familias. En base a observaciones: </br>
+	+ **codFam**:	Clasifica los productos según familias. En base a observaciones: </br>
      		- CA: Vacuno </br>
       		- CB: Ovino</br>
      		- CC: Porcino</br>
