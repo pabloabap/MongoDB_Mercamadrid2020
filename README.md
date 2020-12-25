@@ -1,6 +1,9 @@
 # JSON-Mercamadrid: volumen y precio de productos comercializados (enero2020-septiembre 2020)
-JSON creado a partir de datos abiertos aportados por Mercamadrid con modificaciones personales para practicar consultas con MongoDB.
+JSON creado a partir de [datos abiertos aportados por Mercamadrid] con modificaciones personales para practicar consultas con MongoDB.
 Tabla de datos con 33.644 registros y 8 campos (3 tipo objeto y 1 tipo array)
+
+[datos abiertos aportados por Mercamadrid]:https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=a4df993ae322b610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default
+
 
 ## ESTRUCTURA DEL CONJUNTO DE DATOS	
 	
