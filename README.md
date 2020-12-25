@@ -23,7 +23,6 @@ Tabla de datos con 33.644 registros y 8 campos (3 tipo objeto y 1 tipo array)
       		- P4: Pescado fresco</br>
       		- P5: Marisco fresco</br>
       		- P6: Pescado y marisco congelado</br>
-      
   	+ **codProd**:	Código del producto dentro de la familia</br>      
 3. **descVar**:	Descripción del producto vendido</br>
 4. **origen**:	Código de origen del producto. Del 1 al 52 corresponde al número de provincia de España. Por encíma, hacen referencia a distintos paises.</br>
