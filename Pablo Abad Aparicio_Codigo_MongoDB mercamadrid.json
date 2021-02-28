@@ -1,0 +1,210 @@
+// ENTREGA_BASE_DE_DATOS_NO_SQL_CON_MONGODB - CODIGO
+//  PABLO_ABAD_APARICIO
+
+
+//CARGA DE DATOS
+
+    // IMPORTACION A PARTIR DE FICHERO JSON (33.640 documentos)
+	//mongoimport --db entrega --collection prueba --type json --file .\imports\mercamadrid2020.json --drop –stopOnError 
+	//pause
+    
+        // Con un find sin parametros vemos que todos documentos se han importado correntamente 
+        // y observamos las claves y valores de cara a futuras consultas
+
+db.prueba.find()
+
+// EJERCICIOS DE INSERCIÓN
+
+    // INSERCIÓN MANUAL DE REGISTROS
+        //En la importación JSON olvidamos meter 4 registros. Los incorporamos manualmente con insertMany
+        
+db.prueba.insertMany([
+{"fechaVenta" : {"año" : 2020, "mes": 9},  "codVariedad" : {"codFam" : "P6", "codProd" : "9601"}, "descVar" : "ELABORADOS CONGELADOS CONG", "origen" : 48, "descOrigen" : "VIZCAYA", "kg" : 6940, "precio" : {"freq" : 0, "max" : 0, "min" : 0}, "tags" : ["CONGELADO", "ELABORADO"]},
+{"fechaVenta" : {"año" : 2020, "mes": 9},  "codVariedad" : {"codFam" : "P6", "codProd" : "A101"}, "descVar" : "HALIBUT CONGELADO CONG", "origen" : 20, "descOrigen" : "GUIPUZCOA", "kg" : 211, "precio" : {"freq" : 3.3, "max" : 3.5, "min" : 3.25}, "tags" : ["CONGELADO"]},
+{"fechaVenta" : {"año" : 2020, "mes": 9},  "codVariedad" : {"codFam" : "P6", "codProd" : "A101"}, "descVar" : "HALIBUT CONGELADO CONG", "origen" : 36, "descOrigen" : "PONTEVEDRA", "kg" : 3000, "precio" : {"freq" : 3.3, "max" : 3.5, "min" : 3.25}, "tags" : ["CONGELADO"]},
+{"fechaVenta" : {"año" : 2020, "mes": 9},  "codVariedad" : {"codFam" : "P6", "codProd" : "A101"}, "descVar" : "HALIBUT CONGELADO CONG", "origen" : 45, "descOrigen" : "TOLEDO", "kg" : 1571, "precio" : {"freq" : 3.3, "max" : 3.5, "min" : 3.25}, "tags" : ["CONGELADO"]}
+])
+
+        //Contamos el número total de registros para ver que se hán añadido correctametne (tiene que haber 33.644)
+
+db.prueba.find().count()
+
+
+// EJERCICIOS DE BUSQUEDA/FILTRADO
+
+    // Comprobar que todos los elementos tiene el campo precio rellenado para posteriores análisis
+var query1 = {"precio.freq" : {$exists: false}}
+db.prueba.find(query1)
+
+    // Encontrar los productos de enero 2020 y precio frecuente entre 0.20 y 0.01 €. Ordenar ascendente por precio frecuente
+var subquery1 = {'año' : 2020, 'mes' : 1}
+
+var query1 = {'fechaVenta' : subquery1}
+
+var query2 = {"precio.freq" : {$lt : 0.20}}
+
+var query3 = {"precio.freq" : {$gt : 0.01}}
+
+var logico = {$and : [query1, query2, query3]}
+
+var orden = {"precio.freq" : 1 }
+    
+db.prueba.find(logico)
+    .sort(orden)
+    
+    // Encontrar los registros con 1 etiqueta para pensar posibles etiquetas a añadir
+var query1 = {"tags": {$size: 1}}
+
+db.prueba.find(query1)
+
+// EJERCICIOS DE ACTUALIZACION
+
+    // Crear nueva columna que sea TRUE si el producto es nacional (número del campo origen menor a 54)
+var nacional = {"origen" : {$lte :52 }}
+
+var relleno = {$set:{'nacional' : true}}
+
+var filtroNacional = {"nacional" : {$exists: true}}
+
+db.prueba.updateMany(nacional, relleno)
+
+db.prueba.find({origen : {$lte : 52}}).count()
+
+db.prueba.find(filtroNacional).count() // De 33.644 registros 27.495 son producto nacional
+
+    //Consultar los registros de productos internacionales
+var filtroInternacional = {"nacional" : {$exists: false}}    
+db.prueba.find(filtroInternacional).count() //6.149 registros internacionales
+
+// EJERCICIOS DE PROYECCIÓN
+
+    // Consulta en la que aparezcan unicamente las claves descOrigen y las tags de cada registro
+var query1 = {"descOrigen" : 1, "tags" : 1, '_id' : 0}
+
+db.prueba.find({}, query1)
+
+
+// EJERCICIOS PIPELINE DE AGREGACIÓN
+
+    // Agrupar la cantidad (Kg) de producto vendido en Mercamadrid por lugar de origen y ordenar descendentemente en función de la cantidad
+db.prueba.aggregate({$group: {"_id": "$descOrigen", "totalKg": {$sum: "$kg"}}})
+    .sort({totalKg: -1})
+    
+    // Top 10 productos con más kg vendidos de origen valenciano y su cantidad
+db.prueba.aggregate([
+    {$match: {"descOrigen": "VALENCIA"}},
+    {$group: {"_id": "$descVar", "totalKg": {$sum: "$kg"}}}
+    ])
+    .sort({"totalKg": -1})
+    .limit(10)
+
+    // Conocer los 10 lugares de origen que llevan más cantidad de un único producto y mostrar el producto del que se trata
+db.prueba.aggregate(
+    {$group: {"_id": {"origen": "$descOrigen", "variedad" : "$descVar"},"orige": {$first: "$descOrigen"}, "variedad": {$first : "$descVar"}, "totalKg": {$sum: "$kg"}}})
+    .sort({"totalKg" : -1})
+    .limit(10)
+    .project({_id:0})
+
+    
+    // Ventas anuales Mercamadrid (€) agrupadas por mes y ordenadas descendentemente por facturación
+        //Multiplicar kg de producto por su precio frecuente
+var query1 = {$sum: {"$multiply": ["$kg", "$precio.freq" ]}}
+
+db.prueba.aggregate([
+    {$group : {"_id": "$fechaVenta.mes", "Ventas totales": query1}}
+    ])
+    .sort({"Ventas totales": -1})
+    
+    // Ventas anuales por producto, Kg vendidos y ordenadas descendentemente por facturación
+var query1 = {$sum: {$multiply: ["$kg", "$precio.freq" ]}}
+
+db.prueba.aggregate([
+    {$group : {"_id": "$descVar", "Ventas totales(€)": query1, "totalKg": {$sum: "$kg"}}}
+    ])
+    .sort({"Ventas totales": -1})
+    
+    
+    // Cuántos productos diferentes se venden por categoría (codFam). OJO: Un producto cuenta con varios registros (uno por mes).
+    
+        // Hacemos una primera agrupación por Familia de producto y  producto. Con sum 1 hacemos  recuento de registros en cada grupo
+var subquery1 = {"_id": {"familia" : "$codVariedad.codFam", "producto" : "$codVariedad.codProd"}, "registros": {$sum: 1}}
+
+var query1 = {$group: subquery1}
+
+        // Con la agrupación anterior hemos unificado duplicados en un documento. 
+        //Ahora volvemos a agrupar por familia de producto para contar registros únicos.
+var subquery2 = {"_id": "$_id.familia", "Productos":{$sum: 1}}
+
+var query2 = {$group: subquery2}
+
+        // Orden A-Z por familia de producto
+var orden = {$sort: {"_id" : 1}}
+
+        //union de variables
+var union = [query1, query2, orden]
+        
+        // Consulta de agregación
+db.prueba.aggregate(union)
+    
+    // Producto más caro de cada familia de producto
+var query1 = {$max : "$precio.max"}    
+
+var query2 = {$max : "$precioMax"}
+    
+db.prueba.aggregate(
+        // Agrupamos por familia y producto para unificar todos los registros de cada producto quedándonos con el máximo según su precio.max
+    {$group: { _id: {"Familia" : "$codVariedad.codFam", "Producto" : "$descVar"}, "precioMax" : query1}},
+        // Ordenamos resultados por precioMax de forma descendente
+    {$sort: {"precioMax": -1}},
+        // Agrupamos por Familia quedándonos con el primer produto.
+        // Como anteriormente hemos ordenado por precioMax descendente se seleccionará el producto más caro de cada familia y su precio
+    {$group: {_id: "$_id.Familia", "Producto": {$first: "$_id.Producto"}, "precioMax": query2}},
+        // Ordenamos por precioMax descendente
+    {$sort: {"precioMax": -1}}
+    )
+    
+    // Productos internacionales ordenados descendentemente por ventas(kg)
+var subquery1 = {"nacional": null}
+
+var query1 = {$match: subquery1}
+
+var query2 = {$group: {_id: "$descVar", "Cantidad(kg)": {$sum: "$kg"}}}
+
+var orden = {$sort: {"Cantidad(kg)": -1}}
+
+var union = [query1, query2, orden]
+
+db.prueba.aggregate(union)
+
+    // Kg de mercancia de origen nacional vs origen internacional 
+var query1 = {$sum: "$kg"}
+
+db.prueba.aggregate(
+    {$group: { _id: "$nacional", "TotalKg" : query1}}
+    )
+    
+    // Top 10 importadores 
+
+db.prueba.aggregate(
+    {$match: {"origen": {$gte: 54}}},
+    {$group: {"_id": "$origen", "LugarOrigen":{$first: "$descOrigen"}, "kgImportados":{$sum: "$kg"}}},
+    {$project: {"_id": 0}},
+    {$sort: {"kgImportados": -1}},
+    {$limit: 10}
+    )
+
+   // Ventas (kg) anuales de fresón
+db.prueba.aggregate(
+    {$match: {"descVar": "FRESON"]}},
+    {$group: {"_id": "$fechaVenta.mes","kgVendidos": {$sum: "$kg"}}},
+    {$sort: {_id: 1}}
+    )
+    
+    // Obtener todos los peces con la etiqueta de RIO y ordenar por precio.freq descendentemente.
+db.prueba.aggregate(
+    {$match: {"tags": "RIO"}},
+    {$group: {"_id": "$descVar", "Precio": {$avg:"$precio.freq"}}},
+    {$sort: {"Precio": -1}}
+    )
+    
+    db.prueba.find({})
