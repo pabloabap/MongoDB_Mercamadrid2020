@@ -35,7 +35,7 @@ Los datos vienen en CSV por lo que he hecho ciertos cambios para convertirlos a 
       		- P6: Pescado y marisco congelado </br>
   	+ ```codProd```:	Código del producto dentro de la familia </br>      
 3. ```descVar```:	Descripción del producto vendido </br>
-4. ```origen```:	Código de origen del producto. Del 1 al 52 corresponde al número de provincia de España. Por encíma, hacen referencia a distintos paises. </br>
+4. ```origen```:	Código de origen del producto. Del 1 al 54 corresponde al número de provincia de España. Por encíma, hacen referencia a distintos paises. </br>
 5. ```descOrigen```:	Descripción del origen del producto </br>
 6. ```kg```:	Kilos vendidos en la franja de tiempo </br>
 7. ```precio```:	Precios/kg registrados en el periodo separados en: </br>
