@@ -1,11 +1,18 @@
-# JSON-Mercamadrid: volumen y precio de productos comercializados (enero2020-septiembre 2020)
-JSON creado a partir de [datos abiertos aportados por Mercamadrid] con modificaciones personales para practicar consultas con MongoDB.
-Tabla de datos con 33.644 registros y 8 campos (3 tipo objeto y 1 tipo array)
-
-[datos abiertos aportados por Mercamadrid]:https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=a4df993ae322b610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default
+# Creación de base de datos de Mercamadrid y realización de consultas con MongoDB 
+## Introducción
+En este proyecto he trabajado sobre el **volumen y precio de productos comercializados en Mercamadrid de enero a septiembre de 2020**. Los datos han sido obtenidos del [portal de datos abiertos del Ayuntamiento de Madrid]. 
 
 
-## ESTRUCTURA DEL CONJUNTO DE DATOS	
+Mercamadrid es el centro de abastecimiento y distribución de alimentos frescos más importante de España y un referente internacional. Fue fundado en 1982 y actualmente cuenta con 222 hectareas dedicadas a la comercialización de frutas, verduras, carnes y pescados al por mayor.
+
+
+Los datos vienen en CSV por lo que he hecho ciertos cambios para convertirlos a formato [JSON][código JSON] y poder sacar más partido de ellos. En total son 33.644 registros y 8 campos.
+
+[portal de datos abiertos del Ayuntamiento de Madrid]:https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=a4df993ae322b610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default
+[código JSON]: https://github.com/pabloabap/JSON-Mercamadrid2020/blob/main/mercamadrid2020.json
+
+
+### Estructura del conjunto de datos
 	
 1. **fechaVenta**:	Momento de recopilación de los datos. Partido en año y mes </br>
 	+ **año**:	El año de la toma de datos es 2020 </br>
@@ -36,5 +43,30 @@ Tabla de datos con 33.644 registros y 8 campos (3 tipo objeto y 1 tipo array)
    + **max**:	Precio máximo registrado del periodo</br>
    + **min**:	Precio mínimo registrado del periodo</br>
 8. **tags**:	Etiquetas clasificadoras de cada registro (elaboración propia)</br>
+
+## Importacion
+Importo archivo JSON por linea de comandos e inserto 4 registros de forma manual.
+
+## Consultas
+### De busqueda
+1. Comprobar que los registros tienen el campo precio relleno.
+2. Encontrar los productos de enero 2020 con precio.freq entre 0.01€ y 0.20€ y ordenarlos por ascendentemente por precio.freq.
+3. Encontrar los tegistro con una etiqueta (tags) para pensar posibles etiquetas a añadir.
+### De actualización
+1. Crear una nueva columna que sea TRUE si el producto es nacional (clave "origen" menor a 54).
+### De proyección
+1. Consultar las claves "descOrigen" y "tags" de cada registro.
+### De agregación
+1. Agrupar la canditad (Kg) de producto vendido en Mercamadrid por lugar de origen y ordenar descendentemente en función de la cantidad.
+2. Top 10 productos con más kg vendidos de origen valenciano y su cantidad.
+3. Conocer los 10 lugares de origen que llevan más cantidad de un único producto y mostrar el producto del que se trata.
+4. Ventas anuales en Mercamadrid por mes y ordenadas descendentemente por facturación.
+5. Ventas anuales de producto, kg vendidos y ordenadas descendentemente por facturación.
+6. Conocer cúantos productos diferentes se venden por categoría ("codFam").
+7. Producto más caro de cada familia de producto.
+8. Productos internacionales ordenados descendentemente por ventas (kg).
+9. Kg de mercancía de origen nacional vs origen internacional.
+10. Top 10 importadores y cantidad importada.
+11. Obtener todos los peces con la categoría "RIO" en su clave "tags" y ordenar por "precio.freq" descendentemente. 
 
 
