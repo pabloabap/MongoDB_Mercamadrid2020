@@ -6,7 +6,7 @@ En este proyecto he trabajado sobre el **volumen y precio de productos comercial
 Mercamadrid es el centro de abastecimiento y distribución de alimentos frescos más importante de España y un referente internacional. Fue fundado en 1982 y actualmente cuenta con 222 hectareas dedicadas a la comercialización de frutas, verduras, carnes y pescados al por mayor.
 
 
-Los datos vienen en CSV por lo que he hecho ciertos cambios para convertirlos a formato [JSON][código JSON] y poder sacar más partido de ellos. En total son 33.644 registros y 8 campos.
+Los datos vienen en CSV por lo que he hecho ciertos cambios para convertirlos a formato [JSON (mercamadrid.json)][código JSON] y poder sacar más partido de ellos. En total son 33.644 registros y 8 campos.
 
 [portal de datos abiertos del Ayuntamiento de Madrid]:https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=a4df993ae322b610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default
 [código JSON]: https://github.com/pabloabap/JSON-Mercamadrid2020/blob/main/mercamadrid2020.json
