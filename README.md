@@ -50,8 +50,8 @@ Importo archivo JSON por linea de comandos e inserto 4 registros de forma manual
 ## Consultas
 ### De busqueda
 1. Comprobar que los registros tienen el campo precio relleno.
-2. Encontrar los productos de enero 2020 con precio.freq entre 0.01€ y 0.20€ y ordenarlos por ascendentemente por precio.freq.
-3. Encontrar los tegistro con una etiqueta (tags) para pensar posibles etiquetas a añadir.
+2. Encontrar los productos de enero 2020 con precio.freq entre 0.01€ y 0.20€ y ordenarlos ascendentemente por precio.freq.
+3. Encontrar los registro con una etiqueta (tags) para pensar posibles etiquetas a añadir.
 ### De actualización
 1. Crear una nueva columna que sea TRUE si el producto es nacional (clave "origen" menor a 54).
 ### De proyección
